@@ -1,0 +1,1207 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>moms of hamburg — built your own village</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Sansita+One&display=swap" rel="stylesheet" />
+<script src="image-slot.js"></script>
+<style>
+  :root{
+    --orange:#F76317;
+    --orange-deep:#E55411;
+    --cream:#FFFFFF;
+    --cream-soft:#FFF6EE;
+    --ink:#2A1206;
+    --serif:"DM Serif Display", "Times New Roman", serif;
+    --logo:"Sansita One", "Cooper Black", "Georgia", serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{background:var(--orange);color:var(--cream);font-family:var(--serif);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  html{scroll-behavior:smooth;}
+  body{overflow-x:hidden;}
+  ::selection{background:var(--cream);color:var(--orange);}
+
+  /* ---------- TOP NAV ---------- */
+  .nav{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:18px 36px;
+    pointer-events:none;
+    transition:background .3s ease, backdrop-filter .3s ease, padding .3s ease, border-color .3s ease;
+    border-bottom:1px solid transparent;
+  }
+  .nav.scrolled{
+    background:rgba(247,99,23,.72);
+    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
+    border-bottom-color:rgba(255,255,255,.18);
+    padding:12px 36px;
+  }
+  @media (max-width:720px){
+    .nav.scrolled{padding:10px 18px;}
+  }
+  .nav .mark{
+    font-family:var(--logo);font-size:22px;line-height:.85;color:var(--cream);
+    letter-spacing:-.01em;pointer-events:auto;
+  }
+  .nav .mark span{display:block;}
+  .nav .menu{
+    display:flex;gap:28px;font-family:var(--serif);font-size:15px;color:var(--cream);
+    letter-spacing:.02em;pointer-events:auto;
+  }
+  .nav .menu a{color:inherit;text-decoration:none;opacity:.85;transition:opacity .2s;}
+  .nav .menu a:hover{opacity:1;}
+  .nav .cta{
+    pointer-events:auto;
+    background:var(--cream);color:var(--orange);
+    font-family:var(--serif);font-size:14px;
+    padding:10px 18px;border-radius:999px;border:0;cursor:pointer;
+    letter-spacing:.02em;
+    transition:transform .2s ease, background .2s;
+  }
+  .nav .cta:hover{transform:translateY(-1px);}
+  @media (max-width:720px){
+    .nav{padding:16px 18px;}
+    .nav .menu{display:none;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100vh;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:relative;text-align:center;padding:120px 24px 80px;
+    overflow:hidden;
+  }
+  .hero-eyebrow{
+    font-family:var(--serif);font-style:italic;font-size:clamp(15px,2vw,20px);
+    opacity:.9;margin-bottom:28px;letter-spacing:.02em;
+  }
+  .wordmark{
+    font-family:var(--logo);
+    line-height:.86;
+    font-size:clamp(64px, 16vw, 240px);
+    letter-spacing:-.02em;
+    text-align:center;
+    color:var(--cream);
+    will-change:transform;
+    position:relative;
+  }
+  .wordmark .row{display:block;}
+  .wordmark .row.b{padding-left:.08em;}
+  .built{
+    position:absolute;
+    right:clamp(-4px,2vw,40px);
+    top:clamp(2px,1vw,12px);
+    font-family:var(--serif);
+    font-style:normal;font-weight:400;
+    font-size:clamp(11px,1.1vw,15px);
+    line-height:1.05;letter-spacing:.08em;
+    text-transform:uppercase;text-align:left;
+    color:var(--cream);
+  }
+  .built .heart{display:block;margin-top:6px;font-size:1.4em;line-height:1;}
+  .hero-sub{
+    margin-top:48px;max-width:680px;
+    font-family:var(--serif);font-size:clamp(18px,1.6vw,24px);
+    line-height:1.45;opacity:.95;text-wrap:pretty;
+  }
+  .hero-sub em{font-style:italic;}
+  .scroll-hint{
+    position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+    font-family:var(--serif);font-style:italic;font-size:14px;opacity:.7;
+    letter-spacing:.04em;
+    animation:bob 2.6s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%,100%{transform:translate(-50%,0);opacity:.55;}
+    50%{transform:translate(-50%,8px);opacity:.95;}
+  }
+
+  /* ---------- GENERIC SECTION ---------- */
+  section{position:relative;}
+  .container{max-width:1100px;margin:0 auto;padding:0 28px;}
+
+  /* Pinned BIG headline that reveals while scrolling */
+  .pinwrap{position:relative;height:140vh;}
+  .pinwrap .pin{
+    position:sticky;top:0;height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:0 24px;
+  }
+  .story-body{
+    padding:40px 24px 140px;
+    position:relative;
+    background:var(--orange);
+    z-index:2;
+  }
+
+  h2.big{
+    font-family:var(--serif);
+    font-weight:400;
+    font-size:clamp(48px,9vw,150px);
+    line-height:1.02;
+    letter-spacing:-.02em;
+    /* explicit <br/>s control wrapping; balance would fight the inline-block word wrappers */
+    color:var(--cream);
+    max-width:14ch;
+  }
+  h2.big em{font-style:italic;font-family:var(--serif);}
+  /* word-stagger reveal for big headlines */
+  h2.big .hw{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(28px);
+    filter:blur(6px);
+    transition:opacity .9s cubic-bezier(.2,.7,.2,1), transform .9s cubic-bezier(.2,.7,.2,1), filter .9s ease;
+  }
+  h2.big.in .hw{opacity:1;transform:none;filter:blur(0);}
+
+  /* Body lines */
+  .lines{
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    text-align:center;
+    font-family:var(--serif);
+    font-size:clamp(22px,2.6vw,38px);
+    line-height:1.32;
+    max-width:18ch;
+    margin:0 auto;
+  }
+  .lines.wide{max-width:24ch;}
+  /* word-by-word reveal — each word slides up + un-blurs with stagger */
+  .lines .l{display:block;}
+  .lines .l .lw{
+    display:inline-block;
+    opacity:0;
+    transform:translateY(14px);
+    filter:blur(5px);
+    transition:opacity .7s cubic-bezier(.2,.7,.2,1), transform .7s cubic-bezier(.2,.7,.2,1), filter .7s ease;
+  }
+  .lines.in .l .lw{opacity:1;transform:none;filter:blur(0);}
+  .lines em{font-style:italic;}
+
+  /* small italic label above big headline */
+  .eyebrow{
+    font-family:var(--serif);font-style:italic;
+    font-size:clamp(14px,1.2vw,18px);
+    letter-spacing:.06em;
+    opacity:.8;
+    margin-bottom:24px;
+    text-transform:lowercase;
+  }
+  .center{display:flex;flex-direction:column;align-items:center;text-align:center;}
+
+  /* MARQUEE band */
+  .band{
+    overflow:hidden;border-top:1px solid rgba(255,255,255,.35);
+    border-bottom:1px solid rgba(255,255,255,.35);
+    padding:24px 0;margin:0;
+    background:var(--orange);
+  }
+  .marquee{display:flex;gap:64px;width:max-content;
+    animation:marquee 38s linear infinite;
+    font-family:var(--logo);font-size:clamp(36px,5vw,72px);line-height:1;
+    color:var(--cream);
+    letter-spacing:-.01em;
+  }
+  .marquee span{white-space:nowrap;display:inline-flex;align-items:center;gap:64px;}
+  .marquee span::after{content:"❤";font-family:var(--serif);font-style:normal;font-size:.6em;display:inline-block;transform:translateY(-.1em);}
+  @keyframes marquee{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+
+  /* Stadtteil chips inside CTA */
+  .chips{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:28px;max-width:720px;}
+  .chip{
+    border:1px solid rgba(255,255,255,.55);
+    color:var(--cream);background:transparent;
+    font-family:var(--serif);font-size:15px;
+    padding:10px 16px;border-radius:999px;cursor:pointer;
+    transition:background .2s, color .2s, transform .15s;
+    letter-spacing:.01em;
+  }
+  .chip:hover{background:var(--cream);color:var(--orange);transform:translateY(-1px);}
+  .chip.active{background:var(--cream);color:var(--orange);}
+
+  /* CTA form */
+  .cta-form{
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+    margin-top:36px;width:100%;max-width:560px;margin-left:auto;margin-right:auto;
+  }
+  .cta-form input{
+    flex:1 1 280px;min-width:220px;
+    background:transparent;border:1.5px solid var(--cream);
+    color:var(--cream);font-family:var(--serif);font-size:18px;
+    padding:14px 18px;border-radius:999px;outline:none;
+  }
+  .cta-form input::placeholder{color:rgba(255,255,255,.7);font-style:italic;}
+  .cta-form button{
+    background:var(--cream);color:var(--orange);
+    border:0;cursor:pointer;
+    font-family:var(--serif);font-size:18px;
+    padding:14px 24px;border-radius:999px;
+    transition:transform .2s;
+  }
+  .cta-form button:hover{transform:translateY(-1px);}
+
+  /* FOOTER */
+  footer{
+    padding:80px 24px 50px;
+    text-align:center;
+  }
+  footer .footmark{
+    font-family:var(--logo);line-height:.86;
+    font-size:clamp(56px,10vw,130px);letter-spacing:-.02em;
+    position:relative;display:inline-block;
+  }
+  footer .footmark .b{padding-left:.08em;}
+  footer .meta{
+    margin-top:30px;display:flex;gap:24px;justify-content:center;flex-wrap:wrap;
+    font-family:var(--serif);font-size:14px;opacity:.75;
+  }
+  footer .meta a{color:inherit;text-decoration:none;}
+
+  /* SECTION DIVIDER (thin line) */
+  .rule{
+    width:60px;height:1.5px;background:var(--cream);opacity:.7;
+    margin:0 auto 30px;border-radius:2px;
+  }
+
+  /* Scroll-driven scale for italic words — kept subtle so it never overlaps the line below */
+  .grow{display:inline-block;transition:transform 1s cubic-bezier(.2,.8,.2,1);transform-origin:left center;}
+  .in-view .grow{transform:scale(1.025);}
+
+  /* Pin headline fades out near the end of its section so it never overlaps */
+  .pinwrap .pin{transition:opacity .25s ease-out;will-change:opacity;}
+
+  /* ---------- ROTATING HERO BADGE ---------- */
+  .badge{
+    position:absolute;top:110px;right:5vw;
+    width:110px;height:110px;
+    display:flex;align-items:center;justify-content:center;
+    animation:spin 22s linear infinite;
+    z-index:5;
+  }
+  .badge svg{width:100%;height:100%;}
+  .badge .dot{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-style:italic;font-size:18px;
+  }
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  @media (max-width:820px){.badge{width:80px;height:80px;top:90px;right:5vw;} .badge .dot{font-size:14px;}}
+  @media (max-width:520px){.badge{display:none;}}
+
+  /* ---------- EDITORIAL NUMBERS ---------- */
+  .num{
+    font-family:var(--serif);font-style:italic;
+    font-size:clamp(80px,14vw,180px);line-height:.9;
+    opacity:.18;letter-spacing:-.02em;
+    position:absolute;
+    pointer-events:none;user-select:none;
+  }
+
+  /* ---------- ORNAMENTAL DIVIDER ---------- */
+  .orn{
+    display:flex;align-items:center;justify-content:center;gap:18px;
+    padding:60px 24px;opacity:.85;
+  }
+  .orn .line{width:60px;height:1px;background:var(--cream);opacity:.6;}
+  .orn .star{
+    font-family:var(--serif);font-size:28px;line-height:1;
+    transform:translateY(-2px);
+  }
+
+  /* ---------- EVENTS SECTION ---------- */
+  .events{padding:140px 28px 160px;position:relative;}
+  .events-head{
+    display:flex;justify-content:space-between;align-items:flex-end;
+    max-width:1100px;margin:0 auto 56px;
+    gap:24px;flex-wrap:wrap;
+  }
+  .events-head h2{
+    font-family:var(--serif);font-size:clamp(44px,7vw,110px);
+    line-height:.94;letter-spacing:-.02em;max-width:11ch;
+  }
+  .events-head h2 em{font-style:italic;}
+  .events-head .lead{
+    font-family:var(--serif);font-style:italic;font-size:18px;
+    max-width:280px;opacity:.9;line-height:1.4;text-align:right;
+  }
+  .event-list{max-width:1100px;margin:0 auto;border-top:1.5px solid rgba(255,255,255,.55);}
+  .event{
+    display:grid;
+    grid-template-columns:60px 1fr 1.2fr 110px 130px;
+    align-items:center;gap:24px;
+    padding:28px 8px;
+    border-bottom:1.5px solid rgba(255,255,255,.55);
+    transition:padding .25s ease, background .25s ease;
+    cursor:pointer;position:relative;
+  }
+  .event:hover{padding-left:24px;background:rgba(255,255,255,.04);}
+  .event .e-num{font-family:var(--serif);font-style:italic;font-size:22px;opacity:.7;}
+  .event .e-title{font-family:var(--serif);font-size:clamp(24px,3vw,36px);line-height:1.05;letter-spacing:-.01em;}
+  .event .e-title em{font-style:italic;}
+  .event .e-place{font-family:var(--serif);font-style:italic;font-size:18px;opacity:.9;}
+  .event .e-date{font-family:var(--logo);font-size:22px;line-height:1;letter-spacing:-.01em;text-align:right;}
+  .event .e-rsvp{
+    justify-self:end;
+    border:1.5px solid var(--cream);background:transparent;color:var(--cream);
+    font-family:var(--serif);font-size:15px;
+    padding:10px 18px;border-radius:999px;cursor:pointer;
+    transition:background .2s,color .2s;
+  }
+  .event .e-rsvp:hover,.event .e-rsvp.on{background:var(--cream);color:var(--orange);}
+  @media (max-width:820px){
+    .event{grid-template-columns:1fr;gap:6px;padding:22px 8px;}
+    .event .e-rsvp{justify-self:start;margin-top:8px;}
+    .event .e-date{text-align:left;}
+  }
+  .events-foot{
+    max-width:1100px;margin:36px auto 0;
+    display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;
+    font-family:var(--serif);font-style:italic;font-size:16px;opacity:.85;
+  }
+  .events-foot a{color:var(--cream);text-decoration:underline;text-underline-offset:4px;}
+
+  /* ---------- INSTAGRAM SECTION ---------- */
+  .insta{
+    padding:160px 28px;text-align:center;position:relative;overflow:hidden;
+  }
+  .insta .marker{
+    font-family:var(--serif);font-style:italic;font-size:16px;
+    letter-spacing:.12em;text-transform:uppercase;opacity:.85;
+    margin-bottom:30px;
+  }
+  .insta-handle{
+    font-family:var(--logo);
+    font-size:clamp(56px,12vw,180px);line-height:.86;letter-spacing:-.02em;
+    display:inline-block;position:relative;
+  }
+  .insta-handle .at{font-family:var(--serif);font-style:italic;font-weight:400;}
+  .insta-sub{
+    font-family:var(--serif);font-style:italic;
+    font-size:clamp(20px,2.4vw,30px);
+    max-width:24ch;margin:32px auto 40px;line-height:1.4;
+  }
+  .insta-btn{
+    display:inline-flex;align-items:center;gap:14px;
+    background:var(--cream);color:var(--orange);
+    font-family:var(--serif);font-size:22px;
+    padding:18px 32px;border-radius:999px;
+    text-decoration:none;
+    transition:transform .2s ease, gap .2s ease;
+    border:0;
+  }
+  .insta-btn:hover{transform:translateY(-2px);gap:20px;}
+  .insta-btn svg{width:24px;height:24px;}
+  .insta-tape{
+    margin-top:80px;
+    border-top:1.5px solid rgba(255,255,255,.55);
+    border-bottom:1.5px solid rgba(255,255,255,.55);
+    padding:14px 0;overflow:hidden;
+    transform:rotate(-2deg);
+    margin-left:-5%;margin-right:-5%;
+  }
+  .insta-tape .marquee{font-size:clamp(22px,3vw,40px);gap:36px;animation-duration:24s;}
+  .insta-tape .marquee span::after{content:"@";font-style:italic;}
+
+  /* ---------- INSTAGRAM PROFILE CARD ---------- */
+  .ig-card{
+    max-width:980px;margin:64px auto 0;
+    background:var(--cream);color:var(--ink);
+    border-radius:24px;
+    padding:32px 36px;
+    text-align:left;
+    box-shadow:0 24px 60px -30px rgba(20,5,0,.4);
+  }
+  .ig-header{
+    display:grid;grid-template-columns:auto 1fr auto;gap:28px;align-items:center;
+    padding-bottom:24px;
+    border-bottom:1px solid rgba(42,18,6,.12);
+  }
+  .ig-avatar{
+    width:96px;height:96px;border-radius:50%;
+    background:var(--orange);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--logo);font-size:28px;color:var(--cream);
+    line-height:1;letter-spacing:-.02em;
+    box-shadow:0 0 0 4px var(--cream), 0 0 0 6px var(--orange);
+    flex-shrink:0;
+    overflow:hidden;
+  }
+  .ig-avatar image-slot{width:100%;height:100%;}
+  .ig-meta{display:flex;flex-direction:column;gap:8px;min-width:0;}
+  .ig-handle{
+    font-family:var(--logo);font-size:clamp(24px,3vw,32px);line-height:1;
+    color:var(--ink);letter-spacing:-.01em;
+  }
+  .ig-handle .at{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--orange);}
+  .ig-bio{
+    font-family:var(--serif);font-size:15px;line-height:1.4;color:var(--ink);opacity:.85;
+    max-width:46ch;
+  }
+  .ig-bio em{font-style:italic;}
+  .ig-follow{
+    background:var(--orange);color:var(--cream);border:0;cursor:pointer;
+    font-family:var(--serif);font-size:15px;
+    padding:10px 20px;border-radius:999px;
+    text-decoration:none;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .2s, background .2s;
+    flex-shrink:0;
+  }
+  .ig-follow:hover{transform:translateY(-1px);background:var(--orange-deep);}
+  @media (max-width:680px){
+    .ig-card{padding:22px 20px;border-radius:18px;}
+    .ig-header{grid-template-columns:auto 1fr;gap:16px;}
+    .ig-follow{grid-column:1 / -1;justify-content:center;}
+    .ig-avatar{width:72px;height:72px;font-size:22px;}
+  }
+  .ig-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+    margin-top:24px;
+  }
+  .ig-tile{
+    position:relative;aspect-ratio:1;
+    background:var(--cream-soft);
+    overflow:hidden;
+    border-radius:6px;
+  }
+  .ig-tile image-slot{width:100%;height:100%;}
+  .ig-tile .tag{
+    position:absolute;left:10px;bottom:10px;z-index:2;
+    font-family:var(--serif);font-style:italic;font-size:13px;
+    color:var(--cream);
+    text-shadow:0 1px 8px rgba(0,0,0,.45);
+    pointer-events:none;
+    letter-spacing:.02em;
+  }
+  .ig-tile .icon{
+    position:absolute;right:10px;top:10px;z-index:2;
+    color:var(--cream);opacity:.92;
+    pointer-events:none;
+    filter:drop-shadow(0 1px 6px rgba(0,0,0,.45));
+  }
+  .ig-tile .icon svg{width:18px;height:18px;display:block;}
+  @media (max-width:540px){
+    .ig-grid{gap:4px;}
+    .ig-tile .tag{font-size:11px;left:8px;bottom:8px;}
+  }
+  .ig-foot{
+    margin-top:18px;text-align:center;
+    font-family:var(--serif);font-style:italic;font-size:13px;
+    color:var(--ink);opacity:.55;
+  }
+
+  /* ---------- PULL QUOTE EDITORIAL ---------- */
+  .pq{
+    padding:160px 28px;position:relative;
+  }
+  .pq-grid{
+    max-width:1100px;margin:0 auto;
+    display:grid;grid-template-columns:1fr 2fr;gap:60px;align-items:start;
+  }
+  .pq-meta{
+    font-family:var(--serif);font-style:italic;font-size:16px;
+    letter-spacing:.06em;text-transform:lowercase;opacity:.85;
+    border-top:1.5px solid var(--cream);padding-top:14px;
+  }
+  .pq-quote{
+    font-family:var(--serif);font-size:clamp(34px,5vw,72px);line-height:1.08;
+    letter-spacing:-.015em;text-wrap:balance;
+  }
+  .pq-quote em{font-style:italic;}
+  .pq-quote .mark{
+    font-family:var(--serif);font-style:italic;font-size:1.4em;line-height:0;
+    display:inline-block;transform:translateY(.2em);margin-right:.08em;
+  }
+  @media (max-width:820px){.pq-grid{grid-template-columns:1fr;gap:20px;}}
+
+  /* ---------- SCROLL PROGRESS ---------- */
+  .progress{
+    position:fixed;top:0;left:0;height:2px;background:var(--cream);
+    z-index:60;width:0%;transition:width .08s linear;opacity:.85;
+  }
+
+  /* ---------- MAGAZINE MASTHEAD ---------- */
+  .masthead{
+    border-top:1.5px solid rgba(255,255,255,.55);
+    border-bottom:1.5px solid rgba(255,255,255,.55);
+    padding:18px 28px;
+    display:grid;grid-template-columns:repeat(5,1fr);gap:20px;
+    font-family:var(--serif);font-size:13px;
+    text-transform:uppercase;letter-spacing:.14em;
+    align-items:center;
+  }
+  .masthead .cell{display:flex;flex-direction:column;gap:4px;}
+  .masthead .lbl{font-style:italic;text-transform:none;letter-spacing:.04em;font-size:12px;opacity:.7;}
+  .masthead .val{font-style:normal;letter-spacing:.16em;}
+  .masthead .ctr{text-align:center;}
+  .masthead .end{text-align:right;}
+  @media (max-width:820px){
+    .masthead{grid-template-columns:1fr 1fr;gap:14px;font-size:11px;}
+    .masthead .ctr{text-align:left;}
+    .masthead .end{text-align:left;}
+    .masthead .cell:nth-child(3){display:none;}
+  }
+
+  /* ---------- CHAT / VOICE BUBBLES SECTION ---------- */
+  .voices{
+    padding:160px 28px;position:relative;
+    border-top:1.5px solid rgba(255,255,255,.55);
+    border-bottom:1.5px solid rgba(255,255,255,.55);
+  }
+  .voices-head{
+    max-width:1100px;margin:0 auto 60px;
+    display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:end;
+  }
+  .voices-head h2{
+    font-family:var(--serif);font-size:clamp(44px,7vw,96px);
+    line-height:.95;letter-spacing:-.02em;
+  }
+  .voices-head h2 em{font-style:italic;}
+  .voices-head .lead{
+    font-family:var(--serif);font-style:italic;font-size:18px;
+    line-height:1.45;max-width:34ch;opacity:.95;
+  }
+  .voices-head .lead .tag{
+    display:inline-block;font-family:var(--serif);font-style:normal;
+    text-transform:uppercase;letter-spacing:.16em;font-size:11px;
+    border:1px solid rgba(255,255,255,.7);padding:4px 10px;border-radius:999px;
+    margin-bottom:12px;
+  }
+  @media (max-width:820px){.voices-head{grid-template-columns:1fr;gap:18px;}}
+  .voices-grid{
+    max-width:1100px;margin:0 auto;
+    display:grid;grid-template-columns:repeat(3,1fr);gap:24px;
+  }
+  @media (max-width:820px){.voices-grid{grid-template-columns:1fr;}}
+  .bubble{
+    background:var(--cream);color:var(--orange);
+    border-radius:24px 24px 24px 6px;
+    padding:22px 22px 18px;
+    font-family:var(--serif);font-size:19px;line-height:1.4;
+    position:relative;
+    box-shadow:0 12px 24px -16px rgba(20,5,0,.3);
+  }
+  .bubble em{font-style:italic;}
+  .bubble .meta{
+    margin-top:14px;display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--serif);font-style:italic;font-size:13px;opacity:.65;
+    letter-spacing:.02em;
+  }
+  .bubble.voice{
+    display:flex;flex-direction:column;gap:14px;
+  }
+  .bubble .wave{
+    display:flex;align-items:center;gap:3px;height:32px;
+  }
+  .bubble .wave i{
+    display:block;width:3px;border-radius:2px;
+    background:currentColor;opacity:.7;
+  }
+  .bubble .duration{
+    font-family:var(--serif);font-style:italic;font-size:13px;opacity:.7;
+  }
+  .bubble.r{border-radius:24px 24px 6px 24px;background:rgba(255,255,255,.92);}
+  .bubble.r .meta{justify-content:flex-end;gap:10px;}
+
+  /* ---------- NEWSLETTER JOIN ---------- */
+  .join-meta{
+    margin-top:32px;display:flex;gap:18px;justify-content:center;align-items:center;
+    font-family:var(--serif);font-style:italic;font-size:14px;
+    letter-spacing:.04em;opacity:.85;
+    flex-wrap:wrap;
+  }
+  .join-meta .dot{width:6px;height:6px;border-radius:50%;background:var(--cream);opacity:.7;}
+  .join-meta strong{font-style:normal;font-weight:400;letter-spacing:.12em;text-transform:uppercase;font-size:12px;}
+
+
+  /* WORD-BY-WORD reveal for one-liner intros */
+  .reveal-words{display:inline-block;}
+  .reveal-words .w{display:inline-block;opacity:0;transform:translateY(14px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal-words.in .w{opacity:1;transform:none;}
+
+  /* Side rail page progress dots */
+  .rail{
+    position:fixed;right:22px;top:50%;transform:translateY(-50%);
+    display:flex;flex-direction:column;gap:10px;z-index:40;
+  }
+  .rail a{
+    width:8px;height:8px;border-radius:50%;
+    background:rgba(255,255,255,.4);transition:background .2s, transform .2s;
+    display:block;
+  }
+  .rail a.active{background:var(--cream);transform:scale(1.3);}
+  @media (max-width:720px){ .rail{display:none;} }
+
+  /* Subtle background grain dots (very low contrast) */
+  .grain{
+    position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.06;
+    background-image:radial-gradient(rgba(255,255,255,.7) 1px, transparent 1px);
+    background-size:3px 3px;
+    mix-blend-mode:overlay;
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<div class="progress" id="progress"></div>
+
+<nav class="nav">
+  <div class="mark">
+    <span>moms of</span>
+    <span>hamburg</span>
+  </div>
+  <div class="menu">
+    <a href="#about">about</a>
+    <a href="#events">treffen</a>
+    <a href="https://www.instagram.com/momsofhamburg" target="_blank" rel="noopener">instagram</a>
+    <a href="#join">join</a>
+  </div>
+  <button class="cta" onclick="document.getElementById('join').scrollIntoView({behavior:'smooth'})">dabei sein</button>
+</nav>
+
+<div class="rail" id="rail"></div>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero" id="top" data-rail="start">
+  <div class="hero-eyebrow">eine community für mütter aus hamburg</div>
+  <div class="wordmark" id="wordmark">
+    <span class="row a">moms of</span>
+    <span class="row b">hamburg</span>
+    <span class="built">
+
+
+</span>
+  </div>
+  <p class="hero-sub">
+    für <em>connection</em> statt vergleichen.<br/>
+    für echte menschen statt perfekte feeds.
+  </p>
+  <div class="scroll-hint">scroll ↓</div>
+
+  <!-- Rotating badge -->
+  <div class="badge" aria-hidden="true">
+    <svg viewBox="0 0 200 200">
+      <defs>
+        <path id="circle" d="M100,100 m-78,0 a78,78 0 1,1 156,0 a78,78 0 1,1 -156,0"/>
+      </defs>
+      <text fill="#ffffff" font-family="DM Serif Display" font-size="19" letter-spacing="6">
+        <textPath href="#circle">BUILT YOUR OWN VILLAGE  •  HAMBURG  •  </textPath>
+      </text>
+    </svg>
+    <div class="dot">♥</div>
+  </div>
+</section>
+
+<!-- ===================== MAGAZINE MASTHEAD ===================== -->
+<div class="masthead">
+  <div class="cell"><span class="lbl">
+</span><span class="val">
+</span></div>
+  <div class="cell"><span class="lbl">
+</span><span class="val">
+</span></div>
+  <div class="cell ctr"><span class="lbl">established</span><span class="val">hamburg · 53°33'n</span></div>
+  <div class="cell end"><span class="lbl">
+</span><span class="val">
+</span></div>
+  <div class="cell end"><span class="lbl">
+</span><span class="val">
+</span></div>
+</div>
+
+<!-- ===================== WHAT IS ===================== -->
+<section class="pinwrap" id="about" data-rail="about">
+  <div class="pin">
+    <div class="center">
+      <div class="eyebrow">01 — was ist das hier</div>
+      <h2 class="big">was ist <em class="grow">moms of<br/>hamburg?</em></h2>
+    </div>
+  </div>
+</section>
+<section class="story-body">
+  <div class="rule"></div>
+  <div class="lines wide" data-reveal>
+    <span class="l">eine community für mütter aus hamburg</span>
+    <span class="l">für <em>connection</em> statt vergleichen</span>
+    <span class="l">für echte menschen statt perfekte feeds</span>
+    <span class="l">für alle, die sich manchmal zwischen</span>
+    <span class="l">spielplatz, arbeit und alltag allein fühlen</span>
+  </div>
+</section>
+
+<!-- ===================== MARQUEE BAND ===================== -->
+<div class="band" aria-hidden="true">
+  <div class="marquee">
+    <span>connection</span>
+    <span>echte mütter</span>
+    <span>kein druck</span>
+    <span>echte treffen</span>
+    <span>kein perfekt sein</span>
+    <span>echte alltage</span>
+    <span>connection</span>
+    <span>echte mütter</span>
+    <span>kein druck</span>
+    <span>echte treffen</span>
+    <span>kein perfekt sein</span>
+    <span>echte alltage</span>
+  </div>
+</div>
+
+<!-- ===================== NOT ABOUT PERFEKTE MÜTTER ===================== -->
+<section class="pinwrap" data-rail="real">
+  <div class="pin">
+    <div class="center">
+      <div class="eyebrow">02 — was uns wichtig ist</div>
+      <h2 class="big">hier gehts<br/>nicht um <em class="grow">perfekte</em><br/>mütter</h2>
+    </div>
+  </div>
+</section>
+<section class="story-body">
+  <div class="rule"></div>
+  <div class="lines" data-reveal>
+    <span class="l"><em>hier</em> geht's um:</span>
+    <span class="l">sprachnachrichten mit „habt ihr spontan lust?"</span>
+    <span class="l">playdates die komplette tage retten</span>
+    <span class="l">ehrliche gespräche auf spielplatzbänken</span>
+    <span class="l">und menschen, die einfach verstehen wie</span>
+    <span class="l">sich mutterschaft manchmal anfühlt</span>
+  </div>
+</section>
+
+<!-- ===================== ELTERNZEIT / WORKING MOM ===================== -->
+<section class="pinwrap" data-rail="village">
+  <div class="pin">
+    <div class="center">
+      <div class="eyebrow">03 — für jede phase</div>
+      <h2 class="big">ob <em class="grow">elternzeit</em><br/>oder working<br/>mom …</h2>
+    </div>
+  </div>
+</section>
+<section class="story-body">
+  <div class="rule"></div>
+  <div class="lines" data-reveal>
+    <span class="l">mütter brauchen connection,</span>
+    <span class="l">nicht nur kinder</span>
+    <span class="l">und nicht jede mama hat automatisch</span>
+    <span class="l">ein <em>village</em></span>
+  </div>
+</section>
+
+<!-- ===================== WHAT SHOULD GROW ===================== -->
+<section class="pinwrap" id="community" data-rail="grow">
+  <div class="pin">
+    <div class="center">
+      <div class="eyebrow">04 — was hier entstehen soll</div>
+      <h2 class="big"><em class="grow">was</em> hier<br/>entstehen<br/>soll?</h2>
+    </div>
+  </div>
+</section>
+<section class="story-body">
+  <div class="rule"></div>
+  <div class="lines" data-reveal>
+    <span class="l">spielplatzdates</span>
+    <span class="l">after work walks</span>
+    <span class="l">kaffee &amp; kinderwagen</span>
+    <span class="l">spontane treffen</span>
+    <span class="l">ehrliche freundschaften</span>
+    <span class="l">und hoffentlich irgendwann:</span>
+    <span class="l">ein bisschen <em>weniger allein sein</em> :)</span>
+  </div>
+</section>
+
+<!-- ===================== EVENTS / NÄCHSTE TREFFEN ===================== -->
+<section class="events" id="events" data-rail="meet">
+  <div class="events-head">
+    <h2>nächste <em>treffen</em></h2>
+    <p class="lead">hier kommen unsere meet-ups, walks &amp; playdates rein — komm spontan vorbei.</p>
+  </div>
+  <div class="event-list" id="eventList">
+    <div class="event">
+      <div class="e-num">01</div>
+      <div class="e-title"><em>spielplatz</em>-date</div>
+      <div class="e-place">planten un blomen, alter botanischer garten</div>
+      <div class="e-date">sa 23.05<br/><span style="font-family:var(--serif);font-style:italic;font-size:15px;opacity:.8;">15:00</span></div>
+      <button class="e-rsvp">ich komm</button>
+    </div>
+    <div class="event">
+      <div class="e-num">02</div>
+      <div class="e-title">after work <em>walk</em></div>
+      <div class="e-place">treffpunkt fontenay-bunker, alster</div>
+      <div class="e-date">mi 27.05<br/><span style="font-family:var(--serif);font-style:italic;font-size:15px;opacity:.8;">18:30</span></div>
+      <button class="e-rsvp">ich komm</button>
+    </div>
+    <div class="event">
+      <div class="e-num">03</div>
+      <div class="e-title">kaffee &amp; <em>kinderwagen</em></div>
+      <div class="e-place">elbgold eimsbüttel</div>
+      <div class="e-date">fr 29.05<br/><span style="font-family:var(--serif);font-style:italic;font-size:15px;opacity:.8;">10:00</span></div>
+      <button class="e-rsvp">ich komm</button>
+    </div>
+    <div class="event">
+      <div class="e-num">04</div>
+      <div class="e-title"><em>mama</em>-brunch</div>
+      <div class="e-place">café paris, altstadt</div>
+      <div class="e-date">so 07.06<br/><span style="font-family:var(--serif);font-style:italic;font-size:15px;opacity:.8;">11:00</span></div>
+      <button class="e-rsvp">ich komm</button>
+    </div>
+    <div class="event">
+      <div class="e-num">05</div>
+      <div class="e-title">stadtpark-<em>picknick</em></div>
+      <div class="e-place">winterhude, an der liegewiese</div>
+      <div class="e-date">sa 13.06<br/><span style="font-family:var(--serif);font-style:italic;font-size:15px;opacity:.8;">14:00</span></div>
+      <button class="e-rsvp">ich komm</button>
+    </div>
+  </div>
+  <div class="events-foot">
+    <span>alle treffen kostenlos · ohne anmeldung · einfach kommen</span>
+    <a href="#join">eigenes treffen vorschlagen →</a>
+  </div>
+</section>
+
+<!-- ===================== ORNAMENTAL DIVIDER ===================== -->
+<div class="orn" aria-hidden="true">
+  <span class="line"></span><span class="star">✦</span><span class="star" style="font-size:18px;">♥</span><span class="star">✦</span><span class="line"></span>
+</div>
+
+<!-- ===================== FOR ALL THE MOMS ===================== -->
+<section class="pinwrap" data-rail="moms">
+  <div class="pin">
+    <div class="center">
+      <div class="eyebrow">05 — du gehörst dazu</div>
+      <h2 class="big"><em class="grow">für</em> all die<br/>moms, die …</h2>
+    </div>
+  </div>
+</section>
+<section class="story-body">
+  <div class="rule"></div>
+  <div class="lines wide" data-reveal>
+    <span class="l">nicht wissen wie man neue freundschaften knüpft</span>
+    <span class="l">sich auf dem spielplatz manchmal awkward fühlen</span>
+    <span class="l">seit monaten sagen „wir sollten mal was machen"</span>
+    <span class="l">oder einfach menschen suchen, die's verstehen</span>
+  </div>
+</section>
+
+<!-- ===================== ORT WERDEN FÜR ===================== -->
+<section class="pinwrap" data-rail="ort">
+  <div class="pin">
+    <div class="center">
+      <div class="eyebrow">06 — unser versprechen</div>
+      <h2 class="big"><em class="grow">moms of<br/>hamburg</em><br/>soll ein ort<br/>werden für …</h2>
+    </div>
+  </div>
+</section>
+<section class="story-body">
+  <div class="rule"></div>
+  <div class="lines" data-reveal>
+    <span class="l">ehrliche <em>connection</em></span>
+    <span class="l">echte mütter</span>
+    <span class="l">echte treffen</span>
+    <span class="l">echte alltage</span>
+    <span class="l">kein druck</span>
+    <span class="l">kein perfekt sein</span>
+    <span class="l">kein „so müsste mutterschaft aussehen"</span>
+  </div>
+</section>
+
+<section class="pq" data-rail="quote">
+  <div class="pq-grid">
+    <div class="pq-meta">ein gedanke<br/>zwischendurch — 2026</div>
+    <p class="pq-quote">
+      <span class="mark">„</span>vielleicht wird <em>das hier</em> genau das <em>village,</em> das so vielen gefehlt hat.<span class="mark" style="transform:translateY(.5em);">"</span>
+    </p>
+  </div>
+</section>
+
+<!-- ===================== INSTAGRAM ===================== -->
+<section class="insta" data-rail="insta">
+  <div class="marker">follow along · daily updates · meet-ups</div>
+  <a class="insta-handle" href="https://www.instagram.com/momsofhamburg" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+    <span class="at">@</span>momsofhamburg
+  </a>
+  <p class="insta-sub">alle treffen, sprachnachrichten &amp; spontane plays werden auf instagram gedroppt.</p>
+
+  <!-- profile card with drag-drop tiles — zieh deine Insta-Screenshots in die Felder rein, sie bleiben gespeichert -->
+  <div class="ig-card" aria-label="Instagram Vorschau">
+    <div class="ig-header">
+      <div class="ig-avatar">
+        <image-slot id="ig-avatar" shape="circle" placeholder="logo / avatar"></image-slot>
+      </div>
+      <div class="ig-meta">
+        <div class="ig-handle"><span class="at">@</span>momsofhamburg</div>
+        <div class="ig-bio">eine community für mütter aus hamburg — <em>connection statt vergleichen.</em> treffen, walks &amp; spielplatz-dates ♥</div>
+      </div>
+      <a class="ig-follow" href="https://www.instagram.com/momsofhamburg" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        folgen
+      </a>
+    </div>
+    <div class="ig-grid">
+      <div class="ig-tile">
+        <image-slot id="ig-post-1" placeholder="post 1"></image-slot>
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="14" height="14" rx="2"/></svg></span>
+        <span class="tag">spielplatz-date</span>
+      </div>
+      <div class="ig-tile">
+        <image-slot id="ig-post-2" placeholder="post 2"></image-slot>
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></span>
+        <span class="tag">after work walk</span>
+      </div>
+      <div class="ig-tile">
+        <image-slot id="ig-post-3" placeholder="post 3"></image-slot>
+        <span class="tag">kaffee &amp; kinderwagen</span>
+      </div>
+      <div class="ig-tile">
+        <image-slot id="ig-post-4" placeholder="post 4"></image-slot>
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="7" y="7" width="14" height="14" rx="2"/></svg></span>
+        <span class="tag">mama-brunch</span>
+      </div>
+      <div class="ig-tile">
+        <image-slot id="ig-post-5" placeholder="post 5"></image-slot>
+        <span class="tag">stadtpark-picknick</span>
+      </div>
+      <div class="ig-tile">
+        <image-slot id="ig-post-6" placeholder="post 6"></image-slot>
+        <span class="icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg></span>
+        <span class="tag">sprachnachricht</span>
+      </div>
+    </div>
+    <div class="ig-foot">zieh deine post-screenshots in die felder — bleibt gespeichert</div>
+  </div>
+
+  <a class="insta-btn" style="margin-top:48px;" href="https://www.instagram.com/momsofhamburg" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+    auf instagram folgen
+  </a>
+  <div class="insta-tape" aria-hidden="true">
+    <div class="marquee">
+      <span>momsofhamburg</span><span>momsofhamburg</span><span>momsofhamburg</span><span>momsofhamburg</span><span>momsofhamburg</span><span>momsofhamburg</span><span>momsofhamburg</span><span>momsofhamburg</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA — JOIN ===================== -->
+<section id="join" style="padding:80px 24px 160px;text-align:center;position:relative;" data-rail="join">
+  <div class="center">
+    <div class="eyebrow">07 — komm mit</div>
+    <h2 class="big" style="max-width:18ch;">das hier soll<br/><em class="grow">wachsen.</em><br/>mit euch.</h2>
+
+    <p style="margin-top:38px;max-width:30ch;font-size:clamp(18px,1.6vw,22px);line-height:1.45;opacity:.95;">
+      mehr connection, mehr gemeinschaft, mehr echte moms aus hamburg.<br/>
+      lass deine mail da &amp; sei von anfang an dabei <em>♥</em>
+    </p>
+
+    <div class="cta-form" style="margin-top:36px;">
+      <input type="email" id="hood" placeholder="deine e-mail …" required />
+      <button type="button" onclick="joinSubmit()">dabei sein</button>
+    </div>
+
+    <div class="join-meta">
+      <span><strong>kein spam</strong></span>
+      <span class="dot"></span>
+      <span>nur die einladungen zu meet-ups</span>
+      <span class="dot"></span>
+      <span>jederzeit abbestellbar</span>
+    </div>
+
+    <p id="thanks" style="margin-top:22px;font-style:italic;font-size:17px;opacity:0;transition:opacity .5s;">
+      yay — willkommen im village ♥
+    </p>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="footmark">
+    <span class="row a">moms of</span><br/>
+    <span class="row b">hamburg</span>
+  </div>
+  <div class="meta">
+    <span>built with ♥ in hamburg</span>
+    <a href="#top">↑ nach oben</a>
+    <a href="#join">dabei sein</a>
+    <span>© 2026</span>
+  </div>
+</footer>
+
+<script>
+  /* ---- Hero wordmark parallax / scale ---- */
+  const wordmark = document.getElementById('wordmark');
+  const navEl = document.querySelector('.nav');
+  function heroFx(){
+    const y = Math.max(0, window.scrollY);
+    const max = window.innerHeight;
+    const t = Math.min(1, y / max);
+    wordmark.style.transform = `translateY(${y * -0.18}px) scale(${1 + t*0.04})`;
+    wordmark.style.opacity = (1 - t * 0.6).toFixed(3);
+    // Nav gets a translucent backdrop once we leave the hero, so headlines can pass behind it cleanly.
+    if(navEl) navEl.classList.toggle('scrolled', y > 80);
+  }
+  window.addEventListener('scroll', heroFx, {passive:true});
+  heroFx();
+
+  /* ---- Word-split helper: wraps every word in <span class="..."> with staggered delay,
+         preserving inline tags (em) and <br>. ---- */
+  function wrapWords(root, cls, stepMs, baseMs){
+    baseMs = baseMs || 0;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null);
+    const nodes = [];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    let i = 0;
+    nodes.forEach(tn=>{
+      if(!tn.nodeValue.trim()) return;
+      const parts = tn.nodeValue.split(/(\s+)/);
+      const frag = document.createDocumentFragment();
+      parts.forEach(p=>{
+        if(p === '') return;
+        if(/^\s+$/.test(p)){
+          frag.appendChild(document.createTextNode(p));
+        } else {
+          const sp = document.createElement('span');
+          sp.className = cls;
+          sp.textContent = p;
+          sp.style.transitionDelay = (baseMs + i*stepMs)+'ms';
+          i++;
+          frag.appendChild(sp);
+        }
+      });
+      tn.parentNode.replaceChild(frag, tn);
+    });
+  }
+  // Apply word-split to every big headline and every body line
+  document.querySelectorAll('h2.big').forEach(h=>wrapWords(h, 'hw', 70));
+  document.querySelectorAll('.lines').forEach(ls=>{
+    [...ls.querySelectorAll('.l')].forEach((l, idx)=>{
+      // each line starts a bit later than the previous \u2014 reads top-down
+      wrapWords(l, 'lw', 45, idx * 160);
+    });
+  });
+  // Trigger headline reveal as the pin section enters viewport
+  const hio = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  }, {threshold:0.35});
+  document.querySelectorAll('h2.big').forEach(h=>hio.observe(h));
+
+  /* ---- Pin headlines fade out as their pinwrap section ends ---- */
+  function updatePins(){
+    const vh = window.innerHeight;
+    document.querySelectorAll('.pinwrap').forEach(section=>{
+      const pin = section.querySelector('.pin');
+      if(!pin) return;
+      const rect = section.getBoundingClientRect();
+      const bottom = rect.bottom;
+      const top = rect.top;
+      // fade out window: bottom from 60vh → 0 maps to 1 → 0
+      const fadeOutStart = vh * 0.6;
+      let outOp = 1;
+      if(bottom >= fadeOutStart) outOp = 1;
+      else if(bottom <= 0) outOp = 0;
+      else outOp = bottom / fadeOutStart;
+      // fade in window: as section enters, top from vh → vh*0.4 maps to 0 → 1
+      let inOp = 1;
+      if(top > vh) inOp = 0;
+      else if(top < vh*0.4) inOp = 1;
+      else inOp = 1 - (top - vh*0.4) / (vh*0.6);
+      pin.style.opacity = Math.min(outOp, inOp).toFixed(3);
+    });
+  }
+  window.addEventListener('scroll', updatePins, {passive:true});
+  window.addEventListener('resize', updatePins);
+  updatePins();
+
+  /* ---- Reveal lines on scroll ---- */
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+      }
+    });
+  }, {threshold:0.25});
+  document.querySelectorAll('[data-reveal]').forEach(el=>io.observe(el));
+
+  /* ---- Word-by-word reveal ---- */
+  document.querySelectorAll('[data-words]').forEach(el=>{
+    const words = el.textContent.split(' ');
+    el.innerHTML = words.map((w,i)=>`<span class="w" style="transition-delay:${i*60}ms">${w}</span>`).join(' ');
+  });
+  const wio = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  }, {threshold:0.4});
+  document.querySelectorAll('.reveal-words').forEach(el=>wio.observe(el));
+
+  /* ---- Italic grow on section-in-view (subtle) ---- */
+  const gio = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      e.target.classList.toggle('in-view', e.isIntersecting);
+    });
+  }, {threshold:0.6});
+  document.querySelectorAll('.pinwrap .pin').forEach(el=>gio.observe(el));
+
+  /* ---- Side rail dots ---- */
+  const sections = [...document.querySelectorAll('[data-rail]')];
+  const rail = document.getElementById('rail');
+  sections.forEach((s,i)=>{
+    const a = document.createElement('a');
+    a.href = '#'; a.title = s.getAttribute('data-rail');
+    a.addEventListener('click',(e)=>{e.preventDefault();s.scrollIntoView({behavior:'smooth',block:'start'});});
+    rail.appendChild(a);
+  });
+  function syncRail(){
+    const links = rail.querySelectorAll('a');
+    let activeIdx = 0;
+    sections.forEach((s,i)=>{
+      const r = s.getBoundingClientRect();
+      if(r.top < window.innerHeight*0.4) activeIdx = i;
+    });
+    links.forEach((l,i)=>l.classList.toggle('active', i===activeIdx));
+  }
+  window.addEventListener('scroll', syncRail, {passive:true});
+  syncRail();
+
+  /* ---- Chips + form ---- */
+  function joinSubmit(){
+    const v = document.getElementById('hood').value.trim();
+    if(!v) return;
+    document.getElementById('thanks').style.opacity = '1';
+    document.getElementById('hood').value = '';
+    setTimeout(()=>{document.getElementById('thanks').style.opacity='0';},3500);
+  }
+
+  /* ---- Scroll progress ---- */
+  const prog = document.getElementById('progress');
+  function updateProgress(){
+    const h = document.documentElement.scrollHeight - window.innerHeight;
+    const p = h > 0 ? (window.scrollY / h) * 100 : 0;
+    prog.style.width = p + '%';
+  }
+  window.addEventListener('scroll', updateProgress, {passive:true});
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+
+  /* ---- Event RSVP toggle ---- */
+  document.querySelectorAll('.e-rsvp').forEach(b=>{
+    b.addEventListener('click',(e)=>{
+      e.stopPropagation();
+      b.classList.toggle('on');
+      b.textContent = b.classList.contains('on') ? 'bin dabei ♥' : 'ich komm';
+    });
+  });
+
+  function joinSubmit_OLD(form){
+    const v = document.getElementById('hood').value.trim();
+    if(!v) return;
+    document.getElementById('thanks').style.opacity = '1';
+    form.reset();
+    document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+    setTimeout(()=>{document.getElementById('thanks').style.opacity='0';},3500);
+  }
+</script>
+</body>
+</html>
